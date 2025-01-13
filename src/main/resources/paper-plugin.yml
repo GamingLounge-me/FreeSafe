@@ -1,0 +1,27 @@
+name: FreeSafe
+version: '${version}' 
+main: me.gaminglounge.freesafe.FreeSafe
+description: 
+api-version: '1.21.4' 
+authors: 
+  - "NAME"
+loader: me.gaminglounge.freesafe.FreeSafeLoader
+depencency:
+#  bootstrap:
+#    WorldEdit:
+#      load: BEFORE
+#      required: true
+#      join-classpath: true
+#    WorldGuard:
+#      load: BEFORE
+#      required: true
+#      join-classpath: true
+  server:
+    WorldEdit:
+      load: BEFORE
+      required: true
+      join-classpath: false
+    WorldGuard:
+      load: BEFORE
+      required: true
+      join-classpath: false

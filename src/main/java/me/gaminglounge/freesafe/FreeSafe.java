@@ -1,0 +1,45 @@
+package me.gaminglounge.freesafe; 
+  
+import org.bukkit.plugin.PluginManager; 
+import org.bukkit.plugin.java.JavaPlugin;
+
+import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import me.gaminglounge.freesafe.commands.PlayerClaimComands; 
+
+public final class FreeSafe extends JavaPlugin { 
+ 
+    public static CreateClaim createClaim;
+    public static VariableManager variableManager;
+    public static FreeSafe INSTANCE; 
+ 
+    @Override
+    public void onLoad() {
+        INSTANCE = this; 
+        CommandAPI.onLoad(new CommandAPIBukkitConfig(this));
+
+    }
+
+    @Override
+    public void onEnable() {
+        // this.listener();
+        CommandAPI.onEnable();
+        new PlayerClaimComands();        
+        createClaim = new CreateClaim();
+        variableManager = new VariableManager();
+
+
+    }
+
+    @Override
+    public void onDisable() {
+        CommandAPI.onDisable();
+
+    }
+
+    public void listener() {
+        PluginManager pm = getServer().getPluginManager();
+
+        // pm.registerEvents(new InvClickEvent(), this);
+    } 
+} 
