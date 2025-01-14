@@ -1,7 +1,11 @@
 package me.gaminglounge.freesafe; 
   
+import java.util.logging.Level;
+
 import org.bukkit.plugin.PluginManager; 
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.sk89q.worldedit.WorldEdit;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
@@ -23,6 +27,7 @@ public final class FreeSafe extends JavaPlugin {
     @Override
     public void onEnable() {
         // this.listener();
+        getLogger().log(Level.INFO, WorldEdit.getVersion());
         CommandAPI.onEnable();
         new PlayerClaimComands();        
         createClaim = new CreateClaim();

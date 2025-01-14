@@ -19,7 +19,7 @@ public class PlayerClaimComands {
     public PlayerClaimComands() {
         new CommandAPICommand("claim")
             .withPermission("freesafe.claim.create")
-            .withSubcommand(new CommandAPICommand("create"))
+            .withSubcommand(new CommandAPICommand("create")
                 .withArguments(new StringArgument("ClaimName"))
                 .withArguments(new Location2DArgument("pos1"))
                 .withArguments(new Location2DArgument("pos2"))
@@ -31,15 +31,15 @@ public class PlayerClaimComands {
                     Location pos3 = VariableManager.pos1To3D((Location2D)args.get("pos1"));
                     Location pos4 = VariableManager.pos2To3D((Location2D)args.get("pos2"));
                     FreeSafe.INSTANCE.createClaim.createRegion(player.getPlayer(), (String)args.get("ClaimName"), pos3, pos4);
-                })    
-                .withSubcommand(new CommandAPICommand("radius"))
+                }))    
+                .withSubcommand(new CommandAPICommand("radius")
                 .withArguments(new StringArgument("ClaimName"))
                 .withArguments(new IntegerArgument("radius"))
                 .executesPlayer((player, args)->{
-                    Location pos3 = VariableManager.pos3FromRadius((Location)player.getLocation(), (Integer)args.get("radius"));
-                    Location pos4 = VariableManager.pos4FromRadius((Location)player.getLocation(), (Integer)args.get("radius"));
+                    Location pos3 = VariableManager.pos3FromRadius((Location)player.getLocation(), (int)args.get("radius"));
+                    Location pos4 = VariableManager.pos4FromRadius((Location)player.getLocation(), (int)args.get("radius"));
                     FreeSafe.INSTANCE.createClaim.createRegion(player.getPlayer(), (String)args.get("ClaimName"), pos3, pos4);
-                })
+                }))
         .register();
     }
 }

@@ -4,9 +4,9 @@ main: me.gaminglounge.freesafe.FreeSafe
 description: 
 api-version: '1.21.4' 
 authors: 
-  - "NAME"
+  - "GamingLounge"
 loader: me.gaminglounge.freesafe.FreeSafeLoader
-depencency:
+dependencies:
 #  bootstrap:
 #    WorldEdit:
 #      load: BEFORE
@@ -20,8 +20,8 @@ depencency:
     WorldEdit:
       load: BEFORE
       required: true
-      join-classpath: false
+      join-classpath: true
     WorldGuard:
       load: BEFORE
       required: true
-      join-classpath: false
+      join-classpath: true

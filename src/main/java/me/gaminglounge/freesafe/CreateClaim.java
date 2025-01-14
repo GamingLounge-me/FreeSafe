@@ -27,7 +27,7 @@ public class CreateClaim {
             return;
         }
 
-        com.sk89q.worldedit.entity.Player weowner = BukkitAdapter.adapt(owner);
+        var weowner = BukkitAdapter.adapt(owner);
 
         //this is the place that basically saves regions and holds them
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -35,18 +35,13 @@ public class CreateClaim {
         //this defines the world of the region
         RegionManager regions = container.get(weowner.getWorld());
 
-        //this gives the region a name/id
-        ProtectedRegion region = regions.getRegion(name);
-
-        region.setPriority(0);
-
         BlockVector3 min = BlockVector3.at(pos3.x(),pos3.y(),pos3.z());
         BlockVector3 max = BlockVector3.at(pos4.x(),pos4.y(),pos4.z());
-        region = new ProtectedCuboidRegion(name, min, max);
+        ProtectedRegion region = new ProtectedCuboidRegion(name, min, max);
 
         DefaultDomain owners = region.getMembers();
         owners.addPlayer(weowner.getUniqueId());
-        owners.addGroup("owners");
+        region.setOwners(owners);
         regions.addRegion(region);
     }
 }

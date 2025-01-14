@@ -18,12 +18,12 @@ public class VariableManager {
         return pos4;
     }
 
-    public static Location pos3FromRadius(Location pos1, Integer radius) {
+    public static Location pos3FromRadius(Location pos1, int radius) {
         Location pos3 = new Location(pos1.getWorld(), pos1.getX() - radius, pos1.getWorld().getMinHeight(), pos1.getZ() - radius);
         return pos3;
     }
 
-    public static Location pos4FromRadius(Location pos1, Integer radius) {
+    public static Location pos4FromRadius(Location pos1, int radius) {
         Location pos4 = new Location(pos1.getWorld(), pos1.getX() + radius, pos1.getWorld().getMaxHeight(), pos1.getZ() + radius);
         return pos4;
     }

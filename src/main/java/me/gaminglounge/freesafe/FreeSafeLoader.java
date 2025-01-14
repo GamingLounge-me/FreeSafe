@@ -25,12 +25,12 @@ public class FreeSafeLoader implements PluginLoader {
         resolver.addDependency(new Dependency(
             new DefaultArtifact("dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.7.0"),
             null));
-        resolver.addDependency(new Dependency(
+/*         resolver.addDependency(new Dependency(
             new DefaultArtifact("com.sk89q.worldguard:worldguard-bukkit:7.0.13-SNAPSHOT"),
             null));
         resolver.addDependency(new Dependency(
             new DefaultArtifact("com.sk89q.worldedit:worldedit-bukkit:7.3.10-SNAPSHOT"),
-            null));
+            null)); */
         classpathBuilder.addLibrary(resolver);
     }
 }
