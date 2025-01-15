@@ -36,7 +36,7 @@ public class ClaimManager {
         //this defines the world of the region
         RegionManager regions = container.get(weowner.getWorld());
         if (regions.hasRegion(nameAdapted)) {
-            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red>, already exists.</red>"));
+            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red> already exists.</red>"));
             return;
         }
         BlockVector3 min = BlockVector3.at(pos3.x(),pos3.y(),pos3.z());
@@ -47,7 +47,7 @@ public class ClaimManager {
         owners.addPlayer(weowner.getUniqueId());
         region.setOwners(owners);
         regions.addRegion(region);
-        owner.sendMessage(mm.deserialize(prefix+"<green>Your Claim named </green><blue>"+name+"</blue><green>, has been created.</green>"));
+        owner.sendMessage(mm.deserialize(prefix+"<green>Your Claim named </green><blue>"+name+"</blue><green> has been created.</green>"));
         if (!(freeSafe.variableManager.getPos3(owner) == null || freeSafe.variableManager.getPos4(owner) == null)) {
             freeSafe.variableManager.removePos3(owner);
             freeSafe.variableManager.removePos4(owner);
@@ -60,10 +60,10 @@ public class ClaimManager {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager regions = container.get(weowner.getWorld());
         if (!regions.hasRegion(nameAdapted)) {
-            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red>, does not exist.</red>"));
+            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red> does not exist.</red>"));
             return;
         }
         regions.removeRegion(nameAdapted);
-        owner.sendMessage(mm.deserialize(prefix+"<green>Your Claim named </green><blue>"+name+"</blue><green>, has been removed.</green>"));
+        owner.sendMessage(mm.deserialize(prefix+"<green>Your Claim named </green><blue>"+name+"</blue><green> has been removed.</green>"));
     }
 }
