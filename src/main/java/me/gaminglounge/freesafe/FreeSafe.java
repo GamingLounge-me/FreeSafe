@@ -13,7 +13,7 @@ import me.gaminglounge.freesafe.commands.PlayerClaimComands;
 
 public final class FreeSafe extends JavaPlugin { 
  
-    public static CreateClaim createClaim;
+    public static ClaimManager claimManager;
     public static VariableManager variableManager;
     public static FreeSafe INSTANCE; 
  
@@ -30,7 +30,7 @@ public final class FreeSafe extends JavaPlugin {
         getLogger().log(Level.INFO, WorldEdit.getVersion());
         CommandAPI.onEnable();
         new PlayerClaimComands();        
-        createClaim = new CreateClaim();
+        claimManager = new ClaimManager();
         variableManager = new VariableManager();
 
 

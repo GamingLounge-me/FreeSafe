@@ -16,10 +16,10 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 
-public class CreateClaim {
+public class ClaimManager {
     
     MiniMessage mm = MiniMessage.miniMessage();
-    String prefix = "<white>[</white><gradient:aqua,green>GamingLounge</gradient><white>]</white> ";
+    String prefix = "<white>[</white><#ff0000>G<#ff1100>a<#ff2200>m<#ff3300>i<#ff4400>n<#ff5500>g<#ff6600>L<#ff7700>o<#ff8800>u<#ff9900>n<#ffaa00>g<#ffbb00>e<white>]</white> ";    FreeSafe freeSafe = FreeSafe.INSTANCE;
 
     public void createRegion(Player owner, String name, Location pos3, Location pos4) {
         
@@ -27,7 +27,7 @@ public class CreateClaim {
             owner.sendMessage(mm.deserialize(prefix+"<red>Invalid region name</red>"));
             return;
         }
-        String nameAdapted = name.toLowerCase()+"_"+owner.getUniqueId().toString();
+        String nameAdapted = owner.getUniqueId().toString()+"_"+name.toLowerCase();
         var weowner = BukkitAdapter.adapt(owner);
 
         //this is the place that basically saves regions and holds them
@@ -36,7 +36,7 @@ public class CreateClaim {
         //this defines the world of the region
         RegionManager regions = container.get(weowner.getWorld());
         if (regions.hasRegion(nameAdapted)) {
-            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name "+name+" already exists.</red>"));
+            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red>, already exists.</red>"));
             return;
         }
         BlockVector3 min = BlockVector3.at(pos3.x(),pos3.y(),pos3.z());
@@ -47,6 +47,23 @@ public class CreateClaim {
         owners.addPlayer(weowner.getUniqueId());
         region.setOwners(owners);
         regions.addRegion(region);
-        owner.sendMessage(mm.deserialize(prefix+"<green>Your Claim named"+name+", has been created.</green>"));
+        owner.sendMessage(mm.deserialize(prefix+"<green>Your Claim named </green><blue>"+name+"</blue><green>, has been created.</green>"));
+        if (!(freeSafe.variableManager.getPos3(owner) == null || freeSafe.variableManager.getPos4(owner) == null)) {
+            freeSafe.variableManager.removePos3(owner);
+            freeSafe.variableManager.removePos4(owner);
+            return;
+        }
+    }
+    public void removeRegion(Player owner, String name) {
+        String nameAdapted = owner.getUniqueId().toString()+"_"+name.toLowerCase();
+        var weowner = BukkitAdapter.adapt(owner);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regions = container.get(weowner.getWorld());
+        if (!regions.hasRegion(nameAdapted)) {
+            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red>, does not exist.</red>"));
+            return;
+        }
+        regions.removeRegion(nameAdapted);
+        owner.sendMessage(mm.deserialize(prefix+"<green>Your Claim named </green><blue>"+name+"</blue><green>, has been removed.</green>"));
     }
 }

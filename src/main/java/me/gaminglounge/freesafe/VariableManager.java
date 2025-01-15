@@ -1,9 +1,22 @@
 package me.gaminglounge.freesafe;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 
 import dev.jorel.commandapi.wrappers.Location2D;
 
@@ -61,5 +74,31 @@ public class VariableManager {
     public static Location pos4FromRadius(Location pos1, int radius) {
         Location pos4 = new Location(pos1.getWorld(), pos1.getX() + radius, pos1.getWorld().getMaxHeight(), pos1.getZ() + radius);
         return pos4;
+    }
+
+    public static List<String> listRegion(Player owner) {
+        
+        var wgowner = WorldGuardPlugin.inst().wrapPlayer(owner);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+
+        List<String> regionNames = Bukkit.getWorlds().stream()
+            .map(BukkitAdapter::adapt)
+            .map(container::get)
+            .map(RegionManager::getRegions)
+            .map(map -> map.values())
+            .flatMap(Collection::stream)
+            .filter(region -> region.isOwner(wgowner))
+            .map(ProtectedRegion::getId)
+            .map(VariableManager::realRegionName)
+            .collect(Collectors.toList());
+
+        return regionNames;
+    }
+
+    public static String realRegionName(String region){
+        if(Pattern.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}_.*", region)){
+            return region.split("_",2)[1];
+        }
+        else return region;
     }
 }
