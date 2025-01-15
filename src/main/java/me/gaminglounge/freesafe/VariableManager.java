@@ -1,10 +1,45 @@
 package me.gaminglounge.freesafe;
 
+import java.util.HashMap;
+
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 
 import dev.jorel.commandapi.wrappers.Location2D;
 
 public class VariableManager {
+
+    private HashMap<Entity, Location> savedpos3;
+    private HashMap<Entity, Location> savedpos4;
+
+    public VariableManager() {
+        savedpos3 = new HashMap<Entity, Location>();
+        savedpos4 = new HashMap<Entity, Location>();
+    }
+
+    public void savePos3(Entity player, Location pos1) {
+        savedpos3.put(player, pos1);
+    }
+
+    public Location getPos3(Entity player) {
+        return savedpos3.get(player);
+    }
+
+    public Location removePos3(Entity player) {
+        return savedpos3.remove(player);
+    }
+
+    public void savePos4(Entity player, Location pos2) {
+        savedpos4.put(player, pos2);
+    }
+
+    public Location getPos4(Entity player) {
+        return savedpos4.get(player);
+    }
+
+    public Location removePos4(Entity player) {
+        return savedpos4.remove(player);
+    }
 
     public static Location pos1To3D(Location2D pos1) {
         
