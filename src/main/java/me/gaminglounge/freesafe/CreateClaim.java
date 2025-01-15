@@ -19,14 +19,15 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 public class CreateClaim {
     
     MiniMessage mm = MiniMessage.miniMessage();
+    String prefix = "<white>[</white><gradient:aqua,green>GamingLounge</gradient><white>]</white> ";
 
     public void createRegion(Player owner, String name, Location pos3, Location pos4) {
         
         if (!(ProtectedRegion.isValidId(name))){
-            owner.sendMessage(mm.deserialize("<red>Invalid region name</red>"));
+            owner.sendMessage(mm.deserialize(prefix+"<red>Invalid region name</red>"));
             return;
         }
-
+        String nameAdapted = name.toLowerCase()+"_"+owner.getUniqueId().toString();
         var weowner = BukkitAdapter.adapt(owner);
 
         //this is the place that basically saves regions and holds them
@@ -34,10 +35,13 @@ public class CreateClaim {
 
         //this defines the world of the region
         RegionManager regions = container.get(weowner.getWorld());
-
+        if (regions.hasRegion(nameAdapted)) {
+            owner.sendMessage(mm.deserialize(prefix+"<red>A region with the name "+name+" already exists.</red>"));
+            return;
+        }
         BlockVector3 min = BlockVector3.at(pos3.x(),pos3.y(),pos3.z());
         BlockVector3 max = BlockVector3.at(pos4.x(),pos4.y(),pos4.z());
-        ProtectedRegion region = new ProtectedCuboidRegion(name, min, max);
+        ProtectedRegion region = new ProtectedCuboidRegion(nameAdapted, min, max);
 
         DefaultDomain owners = region.getMembers();
         owners.addPlayer(weowner.getUniqueId());
