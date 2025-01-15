@@ -36,7 +36,7 @@ public class CreateClaim {
         //this defines the world of the region
         RegionManager regions = container.get(weowner.getWorld());
         if (regions.hasRegion(nameAdapted)) {
-            owner.sendMessage(mm.deserialize(prefix+"<red>A region with the name "+name+" already exists.</red>"));
+            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name "+name+" already exists.</red>"));
             return;
         }
         BlockVector3 min = BlockVector3.at(pos3.x(),pos3.y(),pos3.z());
@@ -47,6 +47,6 @@ public class CreateClaim {
         owners.addPlayer(weowner.getUniqueId());
         region.setOwners(owners);
         regions.addRegion(region);
-        owner.sendMessage(mm.deserialize(prefix+"<green>A Claim named "+name+" was created.</green>"));
+        owner.sendMessage(mm.deserialize(prefix+"<green>Your Claim named"+name+", has been created.</green>"));
     }
 }
