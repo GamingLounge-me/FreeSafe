@@ -47,5 +47,6 @@ public class CreateClaim {
         owners.addPlayer(weowner.getUniqueId());
         region.setOwners(owners);
         regions.addRegion(region);
+        owner.sendMessage(mm.deserialize(prefix+"<green>A Claim named "+name+" was created.</green>"));
     }
 }

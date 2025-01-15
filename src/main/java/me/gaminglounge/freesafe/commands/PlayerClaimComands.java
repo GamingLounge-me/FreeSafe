@@ -45,7 +45,6 @@ public class PlayerClaimComands {
                     Location pos3 = VariableManager.pos3FromRadius((Location)player.getLocation(), (int)args.get("radius"));
                     Location pos4 = VariableManager.pos4FromRadius((Location)player.getLocation(), (int)args.get("radius"));
                     FreeSafe.INSTANCE.createClaim.createRegion(player.getPlayer(), (String)args.get("ClaimName"), pos3, pos4);
-                    player.sendMessage(mm.deserialize(prefix +"<green>A claim named "+args.get("ClaimName")+" was created.</green>"));
                 }))
                 .withSubcommand(new CommandAPICommand("pos1")
                 .executesPlayer((player,args)->{
@@ -67,7 +66,6 @@ public class PlayerClaimComands {
                     Location pos3 = freeSafe.variableManager.getPos3(player);
                     Location pos4 = freeSafe.variableManager.getPos4(player);
                     FreeSafe.INSTANCE.createClaim.createRegion(player.getPlayer(), (String)args.get("ClaimName"), pos3, pos4);
-                    player.sendMessage(mm.deserialize(prefix +"<green>A claim named "+args.get("ClaimName")+" was created.</green>"));
                 }))
         .register();
     }
