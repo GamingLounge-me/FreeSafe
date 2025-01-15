@@ -2,6 +2,7 @@ package me.gaminglounge.freesafe.commands;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.material.Command;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.IntegerArgument;
@@ -42,9 +43,21 @@ public class PlayerClaimComands {
                     FreeSafe.INSTANCE.createClaim.createRegion(player.getPlayer(), (String)args.get("ClaimName"), pos3, pos4);
                 }))
                 .withSubcommand(new CommandAPICommand("pos1")
-                .executesPlayer((player) -> {
-                    VariableManager.savePos3(player,(Location)player.getLocation());
+                .executesPlayer((player,args)->{
+                    freeSafe.variableManager.savePos3(player,(Location)player.getLocation());
                     player.sendMessage(mm.deserialize("<white>[</white><gradient:aqua,green>GamingLounge</gradient><white>]</white> <green>Position 1 set</green>"));
+                }))
+                .withSubcommand(new CommandAPICommand("pos2")
+                .executesPlayer((player,args)->{
+                    freeSafe.variableManager.savePos4(player,(Location)player.getLocation());
+                    player.sendMessage(mm.deserialize("<white>[</white><gradient:aqua,green>GamingLounge</gradient><white>]</white> <green>Position 2 set</green>"));
+                }))
+                .withSubcommand(new CommandAPICommand("claim")
+                .withArguments(new StringArgument("ClaimName"))
+                .executesPlayer((player,args)->{
+                    Location pos3 = freeSafe.variableManager.getPos3(player);
+                    Location pos4 = freeSafe.variableManager.getPos4(player);
+                    FreeSafe.INSTANCE.createClaim.createRegion(player.getPlayer(), (String)args.get("ClaimName"), pos3, pos4);
                 }))
         .register();
     }
