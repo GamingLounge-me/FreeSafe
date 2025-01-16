@@ -66,4 +66,20 @@ public class ClaimManager {
         regions.removeRegion(nameAdapted);
         owner.sendMessage(mm.deserialize(prefix+"<green>Your Claim named </green><blue>"+name+"</blue><green> has been removed.</green>"));
     }
+    public void infoRegion(Player owner, String name) {
+        String nameAdapted = owner.getUniqueId().toString()+"_"+name.toLowerCase();
+        var weowner = BukkitAdapter.adapt(owner);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regions = container.get(weowner.getWorld());
+        if (!regions.hasRegion(nameAdapted)) {
+            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red> does not exist.</red>"));
+            return;
+        }
+        ProtectedRegion region = regions.getRegion(nameAdapted);
+        owner.sendMessage(mm.deserialize(prefix+"<green>Claim Information</green>"));
+        owner.sendMessage(mm.deserialize(prefix+"<green>Claim Name: </green><blue>"+name+"</blue>"));
+        owner.sendMessage(mm.deserialize(prefix+"<green>Claim Owner: </green><blue>"+region.getOwners().toPlayersString()+"</blue>"));
+        owner.sendMessage(mm.deserialize(prefix+"<green>Claim Members: </green><blue>"+region.getMembers().toPlayersString()+"</blue>"));
+        owner.sendMessage(mm.deserialize(prefix+"<green>Claim Area: </green><blue>"+region.getMaximumPoint().distanceSq(region.getMinimumPoint())+"</blue>"));
+    }
 }
