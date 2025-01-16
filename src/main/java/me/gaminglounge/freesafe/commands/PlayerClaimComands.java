@@ -85,19 +85,19 @@ public class PlayerClaimComands {
                     FreeSafe.INSTANCE.claimManager.removeRegion(player.getPlayer(), (String)args.get("Claimname"));
                 }))
             .withSubcommand(new CommandAPICommand("info")
-            .withArguments(new StringArgument("Claimname").replaceSuggestions(ArgumentSuggestions.stringCollection(info ->{
-                if(info.sender() instanceof Player p){
-                    return VariableManager.listRegion(p);
+                .withArguments(new StringArgument("Claimname").replaceSuggestions(ArgumentSuggestions.stringCollection(info ->{
+                    if(info.sender() instanceof Player p){
+                        return VariableManager.listRegion(p);
                     }
                     return null;
-                }))
+                    })))
                 .executesPlayer((player,args)->{
                     if(args.get("Claimname") == null) {
                         player.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim info name</gray>"));
                         return;
                     }
                     FreeSafe.INSTANCE.claimManager.infoRegion(player.getPlayer(), (String)args.get("Claimname"));
-                })))
+                }))
         .register();
     }
 }
