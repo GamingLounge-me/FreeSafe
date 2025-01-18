@@ -7,6 +7,7 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.Location2DArgument;
+import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import dev.jorel.commandapi.wrappers.Location2D;
 import me.gaminglounge.freesafe.FreeSafe;
@@ -35,9 +36,9 @@ public class PlayerClaimComands {
                         return;
                     }
                     Location location = player.getLocation();
-                    Location pos3 = VariableManager.pos3FromRadius(location, (int)args.get("radius"));
+                    Location pos3 = VariableManager.pos3FromRadius(location.getBlock().getLocation(), (int)args.get("radius"));
                     freeSafe.variableManager.savePos3(player,pos3);
-                    Location pos4 = VariableManager.pos4FromRadius(location, (int)args.get("radius"));
+                    Location pos4 = VariableManager.pos4FromRadius(location.getBlock().getLocation(), (int)args.get("radius"));
                     freeSafe.variableManager.savePos4(player,pos4);
                     player.sendMessage(mm.deserialize(prefix +"<green>A claim area within the radius of "+(int)args.get("radius")+" blocks has been selected</green>"));
                 }))
@@ -53,7 +54,7 @@ public class PlayerClaimComands {
                 .withOptionalArguments(new Location2DArgument("pos2"))
                 .executesPlayer((player,args)->{
                     if(args.get("ClaimName") == null) {
-                        player.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim create name</gray>"));
+                        player.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim create \\<name></gray>"));
                         return;
                     }
                     if((args.get("pos1") == null) || (args.get("pos2") == null)) {
@@ -79,7 +80,7 @@ public class PlayerClaimComands {
                 })))
                 .executesPlayer((player,args)->{
                     if(args.get("Claimname") == null) {
-                        player.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim remove name</gray>"));
+                        player.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim remove \\<name></gray>"));
                         return;
                     }
                     FreeSafe.INSTANCE.claimManager.removeRegion(player.getPlayer(), (String)args.get("Claimname"));
@@ -93,10 +94,60 @@ public class PlayerClaimComands {
                     })))
                 .executesPlayer((player,args)->{
                     if(args.get("Claimname") == null) {
-                        player.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim info name</gray>"));
+                        player.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim info \\<name></gray>"));
                         return;
                     }
                     FreeSafe.INSTANCE.claimManager.infoRegion(player.getPlayer(), (String)args.get("Claimname"));
+                }))
+            .withSubcommand(new CommandAPICommand("trust")
+                .withArguments(new StringArgument("Claimname").replaceSuggestions(ArgumentSuggestions.stringCollection(info ->{
+                    if(info.sender() instanceof Player p){
+                        return VariableManager.listRegion(p);
+                    }
+                    return null;
+                    })))
+                .withArguments(new PlayerArgument("player"))
+                .executesPlayer((player,args)->{
+                    if(args.get("Claimname") == null || args.get("player") == null) {
+                        player.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim trust \\<name> \\<player></gray>"));
+                        return;
+                    }
+                    FreeSafe.INSTANCE.claimManager.trustRegion(player.getPlayer(), (String)args.get("Claimname"), (Player)args.get("player"));
+                }))
+            .withSubcommand(new CommandAPICommand("untrust")
+                .withArguments(new StringArgument("Claimname").replaceSuggestions(ArgumentSuggestions.stringCollection(info ->{
+                    if(info.sender() instanceof Player p){
+                        return VariableManager.listRegion(p);
+                    }
+                    return null;
+                    })))
+                .withArguments(new PlayerArgument("player"))
+                .executesPlayer((player,args)->{
+                    if(args.get("Claimname") == null || args.get("player") == null) {
+                        player.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim untrust \\<name> \\<player></gray>"));
+                        return;
+                    }
+                    FreeSafe.INSTANCE.claimManager.untrustRegion(player.getPlayer(), (String)args.get("Claimname"), (Player)args.get("player"));
+                }))
+                .withSubcommand(new CommandAPICommand("rebase")
+                .withArguments(new StringArgument("Claimname").replaceSuggestions(ArgumentSuggestions.stringCollection(info ->{
+                    if(info.sender() instanceof Player p){
+                        return VariableManager.listRegion(p);
+                    }
+                    return null;
+                    })))
+                .executesPlayer((player,args)->{
+                    if(args.get("Claimname") == null) {
+                        player.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim rebase \\<name></gray>"));
+                        return;
+                    }
+                    Location pos3 = freeSafe.variableManager.getPos3(player);
+                    Location pos4 = freeSafe.variableManager.getPos4(player);
+                    if(pos3 == null || pos4 == null) {
+                        player.sendMessage(mm.deserialize(prefix +"<red>Please select an area first.</red>"));
+                        return;
+                    }
+                    FreeSafe.INSTANCE.claimManager.redefineRegion(player, (String)args.get("Claimname"), pos3, pos4);
                 }))
         .register();
     }
