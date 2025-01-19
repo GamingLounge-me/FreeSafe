@@ -12,4 +12,5 @@ To install FreeSafe, follow these steps:
 
 ## Contact
 
-Leave us a message on our [Discord Server](https://discord.gg/6qcNXVwy8S) if you have any improvements or questions, please respect, that this is not an optimized plugin at all and that it is made for just a small minecraft Network.
+Leave us a message on our [Discord Server](https://discord.gg/6qcNXVwy8S) if you have any improvements or questions. Please respect that this is not an optimized plugin at all and that it is made just a small minecraft Network.
+We are not profesional Java Deloper (yet).
