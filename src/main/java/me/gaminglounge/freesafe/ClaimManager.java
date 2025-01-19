@@ -12,6 +12,8 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -34,10 +36,8 @@ public class ClaimManager {
         String nameAdapted = owner.getUniqueId().toString()+"_"+name.toLowerCase();
         var weowner = BukkitAdapter.adapt(owner);
 
-        //this is the place that basically saves regions and holds them
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
 
-        //this defines the world of the region
         RegionManager regions = container.get(weowner.getWorld());
         if (regions.hasRegion(nameAdapted)) {
             owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red> already exists.</red>"));
@@ -56,7 +56,7 @@ public class ClaimManager {
         DefaultDomain owners = region.getMembers();
         owners.addPlayer(weowner.getUniqueId());
         region.setOwners(owners);
-//        region.setFlag(null, null);
+        region.setFlag(Flags.TNT, StateFlag.State.ALLOW);
         regions.addRegion(region);
         owner.sendMessage(mm.deserialize(prefix+"<green>Your Claim named </green><blue>"+name+"</blue><green> has been created.</green>"));
         if (!(freeSafe.variableManager.getPos3(owner) == null || freeSafe.variableManager.getPos4(owner) == null)) {
