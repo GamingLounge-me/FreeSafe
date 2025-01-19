@@ -189,6 +189,16 @@ public class PlayerClaimComands {
                     player.sendMessage(mm.deserialize("<gray> /claim rebase \\<name></gray> <white>Redefines the area of a claim.</white>"));
                     player.sendMessage(mm.deserialize("<gray> /claim transfer \\<name> \\<player></gray> <white>Transfers a claim to another player.</white>"));
                 }))
+/*                 .withSubcommand(new CommandAPICommand("visualize")
+                .withPermission("Claim.create")
+                .executesPlayer((player,args)->{
+                    Location pos3 = freeSafe.variableManager.getPos3(player);
+                    Location pos4 = freeSafe.variableManager.getPos4(player);
+                    if(pos3 == null || pos4 == null) {
+                        return;
+                    }
+                    FreeSafe.INSTANCE.visualization.hotbar(player);
+                })) */
         .register();
     }
 }

@@ -40,7 +40,7 @@ public class ClaimManager {
 
         RegionManager regions = container.get(weowner.getWorld());
         if (regions.hasRegion(nameAdapted)) {
-            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red> already exists.</red>"));
+            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red> already exists.</red><br><green>If you like to rebase the claim use<green> <gray>/claim rebase "+name+"</gray>"));
             return;
         }
         BlockVector3 min = BlockVector3.at(pos3.x(),pos3.y(),pos3.z());
@@ -89,12 +89,15 @@ public class ClaimManager {
         ProtectedRegion region = regions.getRegion(nameAdapted);
         String finalList = "";
         for(String list:region.getMembers().getPlayers())finalList = finalList + String.valueOf(list);
+
         owner.sendMessage(mm.deserialize(
             "<red><bold>Claim Informations</bold></red><br>"+
             "<green>Name: </green><blue>"+name+"</blue><br>"+
             "<green>Owner: </green><blue>"+owner.getName()+"</blue><br>"+
             "<green>Members: </green><blue>"+finalList+"</blue><br>"+
-            "<green>Area: </green><blue>"+FreeSafe.INSTANCE.variableManager.squareArear(region)+"</blue>"
+            "<green>Area: </green><blue>"+FreeSafe.INSTANCE.variableManager.squareArear(region)+"</blue><br>"+
+            "<green>Corner 1: </green><blue>"+region.getMaximumPoint().toString()+"</blue><br>"+
+            "<green>Corner 2: </green><blue>"+region.getMinimumPoint().toString()+"</blue>"
         ));
     }
     public void trustRegion(Player owner, String name, Player target) {

@@ -15,6 +15,7 @@ public final class FreeSafe extends JavaPlugin {
  
     public static ClaimManager claimManager;
     public static VariableManager variableManager;
+    public static Visualization visualization;
     public static FreeSafe INSTANCE; 
  
     @Override
@@ -32,6 +33,7 @@ public final class FreeSafe extends JavaPlugin {
         new PlayerClaimComands();        
         claimManager = new ClaimManager();
         variableManager = new VariableManager();
+        visualization = new Visualization();
 
 
     }
