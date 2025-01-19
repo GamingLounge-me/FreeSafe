@@ -22,6 +22,7 @@ public class PlayerClaimComands {
 
     public PlayerClaimComands() {
         new CommandAPICommand("claim")
+            .withPermission("Claim.create")
             .withSubcommand(new CommandAPICommand("pos1")
                 .executesPlayer((player,args)->{
                     Location location = player.getLocation();
@@ -29,6 +30,7 @@ public class PlayerClaimComands {
                     player.sendMessage(mm.deserialize(prefix +"<green>Position 1 set to "+location.getBlockX()+" "+location.getBlockZ()+"</green>"));
                 }))
             .withSubcommand(new CommandAPICommand("radius")
+            .withPermission("Claim.create")
                 .withArguments(new IntegerArgument("radius"))
                 .executesPlayer((player,args)->{
                     if(args.get("radius") == null || !(args.get("radius") instanceof Integer) || ((int)args.get("radius") < 1) || ((int)args.get("radius") <= 0)) {
@@ -43,12 +45,14 @@ public class PlayerClaimComands {
                     player.sendMessage(mm.deserialize(prefix +"<green>A claim area within the radius of "+(int)args.get("radius")+" blocks has been selected</green>"));
                 }))
             .withSubcommand(new CommandAPICommand("pos2")
+            .withPermission("Claim.create")
                 .executesPlayer((player,args)->{
                     Location location = player.getLocation();
                     freeSafe.variableManager.savePos4(player,location);
                     player.sendMessage(mm.deserialize(prefix +"<green>Position 2 set to "+location.getBlockX()+" "+location.getBlockZ()+"</green>"));
                 }))
             .withSubcommand(new CommandAPICommand("create")
+            .withPermission("Claim.create")
                 .withArguments(new StringArgument("ClaimName"))
                 .withOptionalArguments(new Location2DArgument("pos1"))
                 .withOptionalArguments(new Location2DArgument("pos2"))
@@ -72,6 +76,7 @@ public class PlayerClaimComands {
                     FreeSafe.INSTANCE.claimManager.createRegion(player.getPlayer(), (String)args.get("ClaimName"), pos3, pos4);
                 }))
             .withSubcommand(new CommandAPICommand("remove")
+            .withPermission("Claim.create")
                 .withArguments(new StringArgument("Claimname").replaceSuggestions(ArgumentSuggestions.stringCollection(info ->{
                     if(info.sender() instanceof Player p){
                         return VariableManager.listRegion(p);
@@ -86,6 +91,7 @@ public class PlayerClaimComands {
                     FreeSafe.INSTANCE.claimManager.removeRegion(player.getPlayer(), (String)args.get("Claimname"));
                 }))
             .withSubcommand(new CommandAPICommand("info")
+            .withPermission("Claim.create")
                 .withArguments(new StringArgument("Claimname").replaceSuggestions(ArgumentSuggestions.stringCollection(info ->{
                     if(info.sender() instanceof Player p){
                         return VariableManager.listRegion(p);
@@ -100,6 +106,7 @@ public class PlayerClaimComands {
                     FreeSafe.INSTANCE.claimManager.infoRegion(player.getPlayer(), (String)args.get("Claimname"));
                 }))
             .withSubcommand(new CommandAPICommand("trust")
+            .withPermission("Claim.create")
                 .withArguments(new StringArgument("Claimname").replaceSuggestions(ArgumentSuggestions.stringCollection(info ->{
                     if(info.sender() instanceof Player p){
                         return VariableManager.listRegion(p);
@@ -115,6 +122,7 @@ public class PlayerClaimComands {
                     FreeSafe.INSTANCE.claimManager.trustRegion(player.getPlayer(), (String)args.get("Claimname"), (Player)args.get("player"));
                 }))
             .withSubcommand(new CommandAPICommand("untrust")
+            .withPermission("Claim.create")
                 .withArguments(new StringArgument("Claimname").replaceSuggestions(ArgumentSuggestions.stringCollection(info ->{
                     if(info.sender() instanceof Player p){
                         return VariableManager.listRegion(p);
@@ -130,6 +138,7 @@ public class PlayerClaimComands {
                     FreeSafe.INSTANCE.claimManager.untrustRegion(player.getPlayer(), (String)args.get("Claimname"), (Player)args.get("player"));
                 }))
                 .withSubcommand(new CommandAPICommand("rebase")
+                .withPermission("Claim.create")
                 .withArguments(new StringArgument("Claimname").replaceSuggestions(ArgumentSuggestions.stringCollection(info ->{
                     if(info.sender() instanceof Player p){
                         return VariableManager.listRegion(p);
@@ -148,6 +157,37 @@ public class PlayerClaimComands {
                         return;
                     }
                     FreeSafe.INSTANCE.claimManager.redefineRegion(player, (String)args.get("Claimname"), pos3, pos4);
+                }))
+                .withSubcommand(new CommandAPICommand("transfer")
+                .withPermission("Claim.create")
+                .withArguments(new StringArgument("Claimname").replaceSuggestions(ArgumentSuggestions.stringCollection(info ->{
+                    if(info.sender() instanceof Player p){
+                        return VariableManager.listRegion(p);
+                    }
+                    return null;
+                    })))
+                .withArguments(new PlayerArgument("player"))
+                .executesPlayer((player,args)->{
+                    if(args.get("Claimname") == null || args.get("player") == null) {
+                        player.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim transfer \\<name> \\<player></gray>"));
+                        return;
+                    }
+                    FreeSafe.INSTANCE.claimManager.transferRegion(player.getPlayer(), (String)args.get("Claimname"), (Player)args.get("player"));
+                }))
+                .withSubcommand(new CommandAPICommand("help")
+                .withPermission("Claim.create")
+                .executesPlayer((player,args)->{
+                    player.sendMessage(mm.deserialize("<red>Commands:</red>"));
+                    player.sendMessage(mm.deserialize("<gray> /claim pos1</gray>"));
+                    player.sendMessage(mm.deserialize("<gray> /claim pos2</gray>"));
+                    player.sendMessage(mm.deserialize("<gray> /claim radius \\<radius></gray> <white>Sets the radius of the claim.</white>"));
+                    player.sendMessage(mm.deserialize("<gray> /claim create \\<name></gray> <white>Creates a claim.</white>"));
+                    player.sendMessage(mm.deserialize("<gray> /claim remove \\<name></gray> <white>Removes a claim.</white>"));
+                    player.sendMessage(mm.deserialize("<gray> /claim info \\<name></gray> <white>Shows information about a claim.</white>"));
+                    player.sendMessage(mm.deserialize("<gray> /claim trust \\<name> \\<player></gray> <white>Trusts a player in a claim.</white>"));
+                    player.sendMessage(mm.deserialize("<gray> /claim untrust \\<name> \\<player></gray> <white>Untrusts a player in a claim.</white>"));
+                    player.sendMessage(mm.deserialize("<gray> /claim rebase \\<name></gray> <white>Redefines the area of a claim.</white>"));
+                    player.sendMessage(mm.deserialize("<gray> /claim transfer \\<name> \\<player></gray> <white>Transfers a claim to another player.</white>"));
                 }))
         .register();
     }

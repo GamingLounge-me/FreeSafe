@@ -158,5 +158,27 @@ public class ClaimManager {
     
         owner.sendMessage(mm.deserialize(prefix + "<green>The claim </green><blue>" + name + "</blue><green> has been redefined.</green>"));        
     }
-        
+    public void transferRegion(Player owner, String name, Player target) {
+        String nameAdapted = owner.getUniqueId().toString()+"_"+name.toLowerCase();
+        var weowner = BukkitAdapter.adapt(owner);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regions = container.get(weowner.getWorld());
+        if (!regions.hasRegion(nameAdapted) || regions.getRegion(nameAdapted) == null) {
+            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red> does not exist.</red>"));
+            return;
+        }
+        ProtectedRegion region = regions.getRegion(nameAdapted);
+        DefaultDomain owners = region.getOwners();
+        owners.removeAll();
+        owners.addPlayer(BukkitAdapter.adapt(target).getUniqueId());
+        region.setOwners(owners);
+        BlockVector3 min = region.getMinimumPoint();
+        BlockVector3 max = region.getMaximumPoint();
+        ProtectedRegion newRegion = new ProtectedCuboidRegion(target.getUniqueId().toString()+"_"+name.toLowerCase(), min, max);
+
+        newRegion.setFlags(region.getFlags());
+        newRegion.setMembers(region.getMembers());
+        newRegion.setOwners(region.getOwners());
+        owner.sendMessage(mm.deserialize(prefix+"<green>"+target.getName()+"</green><green> has been set as the new owner of </green><blue>"+name+"</blue>"));
+    }
 }
