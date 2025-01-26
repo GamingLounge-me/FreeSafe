@@ -6,7 +6,9 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -71,6 +73,7 @@ public class ClaimManager {
             return;
         }
     }
+
     public void removeRegion(Player owner, String name) {
         String nameAdapted = owner.getUniqueId().toString()+"_"+name.toLowerCase();
         var weowner = BukkitAdapter.adapt(owner);
@@ -80,12 +83,13 @@ public class ClaimManager {
             owner.sendMessage(mm.deserialize(prefix+"<red>A claim with the name </red><blue>"+name+"</blue><red> does not exist.</red>"));
             return;
         }
-        
+
         freeSafe.variableManager.setClaimBlock(owner, freeSafe.variableManager.getClaimBlock(owner) + freeSafe.variableManager.squareArear(regions.getRegion(nameAdapted)));
 
         regions.removeRegion(nameAdapted);
         owner.sendMessage(mm.deserialize(prefix+"<green>Your claim named </green><blue>"+name+"</blue><green> has been removed.</green>"));
     }
+
     public void infoRegion(Player owner, String name) {
         String nameAdapted = owner.getUniqueId().toString()+"_"+name.toLowerCase();
         var weowner = BukkitAdapter.adapt(owner);
@@ -96,19 +100,19 @@ public class ClaimManager {
             return;
         }
         ProtectedRegion region = regions.getRegion(nameAdapted);
-        String finalList = "";
-        for(String list:region.getMembers().getPlayers())finalList = finalList + String.valueOf(list);
+        String finalList = String.join(", ",region.getMembers().getUniqueIds().stream().map(Bukkit::getOfflinePlayer).map(OfflinePlayer::getName).toList());
 
         owner.sendMessage(mm.deserialize(
             "<red><bold>Claim Informations</bold></red><br>"+
             "<green>Name: </green><blue>"+name+"</blue><br>"+
             "<green>Owner: </green><blue>"+owner.getName()+"</blue><br>"+
             "<green>Members: </green><blue>"+finalList+"</blue><br>"+
-            "<green>Area: </green><blue>"+FreeSafe.INSTANCE.variableManager.squareArear(region)+"</blue><br>"+
+            "<green>Claimblocks: </green><blue>"+FreeSafe.INSTANCE.variableManager.squareArear(region)+"</blue><br>"+
             "<green>Corner 1: </green><blue>"+region.getMaximumPoint().toString()+"</blue><br>"+
             "<green>Corner 2: </green><blue>"+region.getMinimumPoint().toString()+"</blue>"
         ));
     }
+
     public void trustRegion(Player owner, String name, Player target) {
         String nameAdapted = owner.getUniqueId().toString()+"_"+name.toLowerCase();
         var weowner = BukkitAdapter.adapt(owner);
@@ -124,6 +128,7 @@ public class ClaimManager {
         region.setMembers(members);
         owner.sendMessage(mm.deserialize(prefix+"<green>"+target.getName()+"</green><green> has been added as a member of </green><blue>"+name+"</blue>"));
     }
+
     public void untrustRegion(Player owner, String name, Player target) {
         String nameAdapted = owner.getUniqueId().toString()+"_"+name.toLowerCase();
         var weowner = BukkitAdapter.adapt(owner);
@@ -139,6 +144,7 @@ public class ClaimManager {
         region.setMembers(members);
         owner.sendMessage(mm.deserialize(prefix+"<green>"+target.getName()+"</green><green> has been removed as a member of </green><blue>"+name+"</blue>"));
     }
+
     public void redefineRegion(Player owner, String name, Location pos3, Location pos4){
         String nameAdapted = owner.getUniqueId().toString()+"_"+name.toLowerCase();
         var weowner = BukkitAdapter.adapt(owner);
@@ -170,27 +176,36 @@ public class ClaimManager {
     
         owner.sendMessage(mm.deserialize(prefix + "<green>The claim </green><blue>" + name + "</blue><green> has been redefined.</green>"));        
     }
-    public void transferRegion(Player owner, String name, Player target) {
-        String nameAdapted = owner.getUniqueId().toString()+"_"+name.toLowerCase();
+
+    public void transferRegion(Player owner, String regionName, Player target){
+        String nameAdapted = owner.getUniqueId().toString()+"_"+regionName.toLowerCase();
+        String newNameAdapted = target.getUniqueId().toString()+"_"+regionName.toLowerCase();
         var weowner = BukkitAdapter.adapt(owner);
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager regions = container.get(weowner.getWorld());
         if (!regions.hasRegion(nameAdapted) || regions.getRegion(nameAdapted) == null) {
-            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red> does not exist.</red>"));
+            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+regionName+"</blue><red> does not exist.</red>"));
             return;
         }
-        ProtectedRegion region = regions.getRegion(nameAdapted);
-        DefaultDomain owners = region.getOwners();
-        owners.removeAll();
-        owners.addPlayer(BukkitAdapter.adapt(target).getUniqueId());
-        region.setOwners(owners);
-        BlockVector3 min = region.getMinimumPoint();
-        BlockVector3 max = region.getMaximumPoint();
-        ProtectedRegion newRegion = new ProtectedCuboidRegion(target.getUniqueId().toString()+"_"+name.toLowerCase(), min, max);
+        ProtectedRegion oldRegion = regions.getRegion(nameAdapted);
+        BlockVector3 min = oldRegion.getMinimumPoint();
+        BlockVector3 max = oldRegion.getMaximumPoint();
 
-        newRegion.setFlags(region.getFlags());
-        newRegion.setMembers(region.getMembers());
-        newRegion.setOwners(region.getOwners());
-        owner.sendMessage(mm.deserialize(prefix+"<green>"+target.getName()+"</green><green> has been set as the new owner of </green><blue>"+name+"</blue>"));
+        if (regions.hasRegion(newNameAdapted)){
+            owner.sendMessage(mm.deserialize(prefix+"<red>"+target.getName()+" allready owns a Region with the name </red><blue>"+regionName+"</blue><red>.</red>"));
+            return;
+        }
+        ProtectedCuboidRegion newRegion = new ProtectedCuboidRegion(newNameAdapted, min, max);
+
+        newRegion.setFlags(oldRegion.getFlags());
+        newRegion.setMembers(oldRegion.getMembers());
+        DefaultDomain newowner = newRegion.getOwners();
+        newowner.removeAll();
+        newowner.addPlayer(BukkitAdapter.adapt(target).getUniqueId());
+        newRegion.setOwners(newowner);
+        regions.addRegion(newRegion);
+        regions.removeRegion(nameAdapted);
+        owner.sendMessage(mm.deserialize(prefix+"<green>"+target.getName()+"</green><green> has been set as the new owner of </green><blue>"+regionName+"</blue>"));
     }
+
 }

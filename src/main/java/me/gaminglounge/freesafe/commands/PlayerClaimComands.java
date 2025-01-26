@@ -158,6 +158,7 @@ public class PlayerClaimComands {
                         return;
                     }
                     FreeSafe.INSTANCE.claimManager.redefineRegion(player, (String)args.get("Claimname"), pos3, pos4);
+                    
                 }))
                 .withSubcommand(new CommandAPICommand("transfer")
                 .withPermission("Claim.create")
@@ -175,6 +176,7 @@ public class PlayerClaimComands {
                     }
                     FreeSafe.INSTANCE.claimManager.transferRegion(player.getPlayer(), (String)args.get("Claimname"), (Player)args.get("player"));
                 }))
+
                 .withSubcommand(new CommandAPICommand("help")
                 .withPermission("Claim.create")
                 .executesPlayer((player,args)->{
