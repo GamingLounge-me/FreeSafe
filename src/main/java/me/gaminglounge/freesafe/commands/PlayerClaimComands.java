@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
+import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.Location2DArgument;
 import dev.jorel.commandapi.arguments.PlayerArgument;
@@ -189,16 +190,25 @@ public class PlayerClaimComands {
                     player.sendMessage(mm.deserialize("<gray> /claim rebase \\<name></gray> <white>Redefines the area of a claim.</white>"));
                     player.sendMessage(mm.deserialize("<gray> /claim transfer \\<name> \\<player></gray> <white>Transfers a claim to another player.</white>"));
                 }))
-/*                 .withSubcommand(new CommandAPICommand("visualize")
+                .withSubcommand(new CommandAPICommand("visualize")
                 .withPermission("Claim.create")
+                .withArguments(new BooleanArgument("status"))
                 .executesPlayer((player,args)->{
-                    Location pos3 = freeSafe.variableManager.getPos3(player);
-                    Location pos4 = freeSafe.variableManager.getPos4(player);
-                    if(pos3 == null || pos4 == null) {
+                    if(args.get("status") == null || !(args.get("status") instanceof Boolean)) {
+                        player.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim visualize \\<true/false></gray>"));
                         return;
                     }
-                    FreeSafe.INSTANCE.visualization.hotbar(player);
-                })) */
+                    if((boolean)args.get("status")==true) {
+                        freeSafe.visualization.addhotbar(player);
+                        player.sendMessage(mm.deserialize(prefix +"<green>Visualisation enabled</green>"));
+                        return;
+                    }
+                    else {
+                        freeSafe.visualization.removehotbar(player);
+                        player.sendMessage(mm.deserialize(prefix +"<green>Visualisation disabled</green>"));
+                        return;
+                    }
+                }))
         .register();
     }
 }

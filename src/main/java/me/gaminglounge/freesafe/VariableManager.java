@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -22,12 +23,40 @@ import dev.jorel.commandapi.wrappers.Location2D;
 
 public class VariableManager {
 
+    int startClaimblocks = 10000;
+
+    public static final NamespacedKey claimblock = new NamespacedKey("freesafe", "claimblock");
+    public static final NamespacedKey maxclaimblock = new NamespacedKey("freesafe", "maxclaimblock");
     private HashMap<Entity, Location> savedpos3;
     private HashMap<Entity, Location> savedpos4;
 
     public VariableManager() {
         savedpos3 = new HashMap<Entity, Location>();
         savedpos4 = new HashMap<Entity, Location>();
+    }
+
+    public void setClaimBlock(Player player, int amount) {
+        player.getPersistentDataContainer().set(claimblock, org.bukkit.persistence.PersistentDataType.INTEGER, amount);
+    }
+
+    public int getClaimBlock(Player player) {
+        if(!(player.getPersistentDataContainer().has(claimblock, org.bukkit.persistence.PersistentDataType.INTEGER))){
+            player.getPersistentDataContainer().set(claimblock, org.bukkit.persistence.PersistentDataType.INTEGER, startClaimblocks);	
+            return startClaimblocks;
+        }
+        return player.getPersistentDataContainer().get(claimblock, org.bukkit.persistence.PersistentDataType.INTEGER);
+    }
+
+    public void setMaxClaimBlock(Player player, int amount) {
+        player.getPersistentDataContainer().set(maxclaimblock, org.bukkit.persistence.PersistentDataType.INTEGER, amount);
+    }
+
+    public int getMaxClaimBlock(Player player) {
+        if(!(player.getPersistentDataContainer().has(maxclaimblock, org.bukkit.persistence.PersistentDataType.INTEGER))){
+            player.getPersistentDataContainer().set(maxclaimblock, org.bukkit.persistence.PersistentDataType.INTEGER, startClaimblocks);	
+            return startClaimblocks;
+        }
+        return player.getPersistentDataContainer().get(maxclaimblock, org.bukkit.persistence.PersistentDataType.INTEGER);
     }
 
     public void savePos3(Entity player, Location pos1) {
@@ -104,6 +133,8 @@ public class VariableManager {
     public static int squareArear(ProtectedRegion region){
         int x = region.getMaximumPoint().x() - region.getMinimumPoint().x();
         int z = region.getMaximumPoint().z() - region.getMinimumPoint().z();
+        if (x == 0) x = 1;
+        if (z == 0) z = 1;
         return Math.abs(x)*Math.abs(z);
     }
 }

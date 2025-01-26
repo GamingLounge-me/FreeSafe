@@ -43,16 +43,22 @@ public class ClaimManager {
             owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red> already exists.</red><br><green>If you like to rebase the claim use<green> <gray>/claim rebase "+name+"</gray>"));
             return;
         }
+
         BlockVector3 min = BlockVector3.at(pos3.x(),pos3.y(),pos3.z());
         BlockVector3 max = BlockVector3.at(pos4.x(),pos4.y(),pos4.z());
         ProtectedRegion region = new ProtectedCuboidRegion(nameAdapted, min, max);
-        
+
+        if (freeSafe.variableManager.squareArear(region) > freeSafe.variableManager.getClaimBlock(owner)) {
+            owner.sendMessage(mm.deserialize(prefix+"<red>You do not have enough claimblocks to create this claim.</red>"));
+            return;
+        }        
         List<ProtectedRegion> overlapping = region.getIntersectingRegions(regions.getRegions().values());
         if (!overlapping.isEmpty()) {
             owner.sendMessage(mm.deserialize(prefix+"<red>The claim you tried to create, is overlaping with existing claims.</red><br><green>If you like to rebase a claim use<green> <gray>/claim rebase \\<name></gray>"));
             return;
         }
 
+        freeSafe.variableManager.setClaimBlock(owner, freeSafe.variableManager.getClaimBlock(owner) - freeSafe.variableManager.squareArear(region));
         DefaultDomain owners = region.getMembers();
         owners.addPlayer(weowner.getUniqueId());
         region.setOwners(owners);
@@ -71,11 +77,14 @@ public class ClaimManager {
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager regions = container.get(weowner.getWorld());
         if (!regions.hasRegion(nameAdapted)) {
-            owner.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+name+"</blue><red> does not exist.</red>"));
+            owner.sendMessage(mm.deserialize(prefix+"<red>A claim with the name </red><blue>"+name+"</blue><red> does not exist.</red>"));
             return;
         }
+        
+        freeSafe.variableManager.setClaimBlock(owner, freeSafe.variableManager.getClaimBlock(owner) + freeSafe.variableManager.squareArear(regions.getRegion(nameAdapted)));
+
         regions.removeRegion(nameAdapted);
-        owner.sendMessage(mm.deserialize(prefix+"<green>Your Claim named </green><blue>"+name+"</blue><green> has been removed.</green>"));
+        owner.sendMessage(mm.deserialize(prefix+"<green>Your claim named </green><blue>"+name+"</blue><green> has been removed.</green>"));
     }
     public void infoRegion(Player owner, String name) {
         String nameAdapted = owner.getUniqueId().toString()+"_"+name.toLowerCase();
