@@ -23,7 +23,7 @@ import dev.jorel.commandapi.wrappers.Location2D;
 
 public class VariableManager {
 
-    private int startClaimblocks = 40000;
+    private int startClaimblocks = 45000;
 
     public static final NamespacedKey claimblock = new NamespacedKey("freesafe", "claimblock");
     public static final NamespacedKey maxclaimblock = new NamespacedKey("freesafe", "maxclaimblock");

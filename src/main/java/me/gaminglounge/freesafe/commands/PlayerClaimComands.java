@@ -211,6 +211,32 @@ public class PlayerClaimComands {
                         return;
                     }
                 }))
+                .withSubcommand(new CommandAPICommand("claimblocks")
+                .withPermission("Claim.create")
+                .executesPlayer((player, args)->{
+                    int min = freeSafe.variableManager.getClaimBlock(player);
+                    int max = freeSafe.variableManager.getMaxClaimBlock(player);
+                    player.sendMessage(mm.deserialize(prefix +"<gradient:dark_red:red>"+min+"<white>/</white>"+max+" Claimblocks</gradient>"));
+                }))
+                .withSubcommand(new CommandAPICommand("send")
+                .withPermission("Claim.create")
+                .withArguments(new PlayerArgument("player"))
+                .withArguments(new IntegerArgument("amount"))
+                .executesPlayer((player, args)->{
+                    if (args.get("amount") == null || (int)args.get("amount")< 0){
+                        player.sendMessage(mm.deserialize(prefix+"The amount has to be more than 0"));
+                        return;
+                    }
+                    if((int)args.get("amount") > freeSafe.variableManager.getClaimBlock(player)){
+                        player.sendMessage(mm.deserialize(prefix+"<red>You don't have enougth claimblocks.</red>"));
+                        return;
+                    }
+                    freeSafe.variableManager.setClaimBlock(player, freeSafe.variableManager.getClaimBlock(player) - (int) args.get("amount"));
+                    freeSafe.variableManager.setMaxClaimBlock(player, freeSafe.variableManager.getMaxClaimBlock(player) - (int) args.get("amount"));
+                    freeSafe.variableManager.setClaimBlock((Player)args.get("player"), freeSafe.variableManager.getClaimBlock((Player)args.get("player")) + (int) args.get("amount"));
+                    freeSafe.variableManager.setMaxClaimBlock((Player)args.get("player"), freeSafe.variableManager.getMaxClaimBlock((Player)args.get("player")) + (int) args.get("amount"));
+                    player.sendMessage(mm.deserialize("<gradient:#0c7819:#22e639>"+args.get("amount")+" Claimblocks</gradient> have been transfered to"+args.get("player")));
+                }))
         .register();
     }
 }
