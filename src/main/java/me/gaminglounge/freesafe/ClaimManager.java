@@ -171,8 +171,16 @@ public class ClaimManager {
             owner.sendMessage(mm.deserialize(prefix+"<red>The new area of the claim you tried to redefine, is overlaping with existing claims.</red>"));
             return;
         }
+        int currentBlocks = freeSafe.variableManager.getClaimBlock(owner) + freeSafe.variableManager.squareArear(region);
+        int rest = currentBlocks - freeSafe.variableManager.squareArear(newRegion);
+        if(rest < 0) {
+            owner.sendMessage(mm.deserialize(prefix+"<red>You don't have enought Claimblocks to rebase into a new claim."));
+            return;
+        }
+
         regions.removeRegion(nameAdapted);
         regions.addRegion(newRegion);
+        freeSafe.variableManager.setClaimBlock(owner, rest);
     
         owner.sendMessage(mm.deserialize(prefix + "<green>The claim </green><blue>" + name + "</blue><green> has been redefined.</green>"));        
     }
@@ -205,6 +213,10 @@ public class ClaimManager {
         newRegion.setOwners(newowner);
         regions.addRegion(newRegion);
         regions.removeRegion(nameAdapted);
+        int claimblocks = freeSafe.variableManager.squareArear(newRegion);
+        int oldclaimblocks = freeSafe.variableManager.getClaimBlock(owner);
+        freeSafe.variableManager.setMaxClaimBlock(target, claimblocks);
+        freeSafe.variableManager.setMaxClaimBlock(owner, oldclaimblocks-claimblocks);
         owner.sendMessage(mm.deserialize(prefix+"<green>"+target.getName()+"</green><green> has been set as the new owner of </green><blue>"+regionName+"</blue>"));
     }
 

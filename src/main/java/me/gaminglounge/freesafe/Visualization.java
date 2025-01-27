@@ -50,4 +50,3 @@ public class Visualization {
         else return;
     }
 }
-// String.format("%.1f",)

@@ -23,7 +23,7 @@ import dev.jorel.commandapi.wrappers.Location2D;
 
 public class VariableManager {
 
-    int startClaimblocks = 10000;
+    private int startClaimblocks = 40000;
 
     public static final NamespacedKey claimblock = new NamespacedKey("freesafe", "claimblock");
     public static final NamespacedKey maxclaimblock = new NamespacedKey("freesafe", "maxclaimblock");
@@ -49,6 +49,10 @@ public class VariableManager {
 
     public void setMaxClaimBlock(Player player, int amount) {
         player.getPersistentDataContainer().set(maxclaimblock, org.bukkit.persistence.PersistentDataType.INTEGER, amount);
+        if (amount < 0){
+            amount = 0;
+            Bukkit.getLogger().warning("Something went wrong, "+player.getName()+"owns les then 0 max claimblocks.");
+        }
     }
 
     public int getMaxClaimBlock(Player player) {
