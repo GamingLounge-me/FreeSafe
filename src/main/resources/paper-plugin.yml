@@ -25,3 +25,7 @@ dependencies:
       load: BEFORE
       required: true
       join-classpath: true
+    Gamingteams:
+      load: BEFORE
+      required: true
+      join-classpath: true

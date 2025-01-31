@@ -61,7 +61,7 @@ public class ClaimManager {
         }
 
         freeSafe.variableManager.setClaimBlock(owner, freeSafe.variableManager.getClaimBlock(owner) - freeSafe.variableManager.squareArear(region));
-        DefaultDomain owners = region.getMembers();
+        DefaultDomain owners = region.getOwners();
         owners.addPlayer(weowner.getUniqueId());
         region.setOwners(owners);
         region.setFlag(Flags.TNT, StateFlag.State.ALLOW);

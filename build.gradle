@@ -28,6 +28,8 @@ dependencies {
     compileOnly "dev.jorel:commandapi-bukkit-shade-mojang-mapped:9.7.0"
     compileOnly "com.sk89q.worldguard:worldguard-bukkit:7.0.13-SNAPSHOT"
     compileOnly ("com.sk89q.worldedit:worldedit-bukkit:7.3.10-SNAPSHOT")
+    compileOnly files("build/libs/GamingTeams-1.0.jar")
+
 }
 
 def targetJavaVersion = 21 // probaly need to change manuelly

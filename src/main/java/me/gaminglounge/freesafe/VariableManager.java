@@ -124,12 +124,35 @@ public class VariableManager {
             .map(ProtectedRegion::getId)
             .map(VariableManager::realRegionName)
             .collect(Collectors.toList());
+        return regionNames;
+    }
+
+    public static List<String> listTeamRegion(int TeamID, Player sender) {
+
+        var wsender = WorldGuardPlugin.inst().wrapPlayer(sender);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+
+        List<String> regionNames = Bukkit.getWorlds().stream()
+            .map(BukkitAdapter::adapt)
+            .map(container::get)
+            .map(RegionManager::getRegions)
+            .map(map -> map.values())
+            .flatMap(Collection::stream)
+            .filter(region -> region.isOwner(wsender))
+            .map(ProtectedRegion::getId)
+            .filter(region -> Pattern.matches("[0-9]+_.*",region))
+            .map(VariableManager::realRegionName)
+            .collect(Collectors.toList());
 
         return regionNames;
+        
     }
 
     public static String realRegionName(String region){
         if(Pattern.matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}_.*", region)){
+            return region.split("_",2)[1];
+        }
+        else if(Pattern.matches("[0-9]+_.*",region)){
             return region.split("_",2)[1];
         }
         else return region;
