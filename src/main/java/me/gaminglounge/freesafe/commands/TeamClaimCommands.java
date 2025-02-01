@@ -22,7 +22,7 @@ public class TeamClaimCommands {
 
     public TeamClaimCommands() {
 
-        new CommandAPICommand("teamclaim")
+        new CommandAPICommand("test")
             .withSubcommand(new CommandAPICommand("create")
             .withPermission("freesafe.teamclaim.create")
                 .withArguments(new StringArgument("name"))
@@ -34,7 +34,7 @@ public class TeamClaimCommands {
                         executor.sendMessage(mm.deserialize(prefix+"<red>You are not in a team.</red>"));
                         return;
                     }
-                    if(args.get("ClaimName") == null) {
+                    if(args.get("name") == null) {
                         executor.sendMessage(mm.deserialize(prefix +"<red>Please provide the correct input</red><gray> /claim create \\<name></gray>"));
                         return;
                     }

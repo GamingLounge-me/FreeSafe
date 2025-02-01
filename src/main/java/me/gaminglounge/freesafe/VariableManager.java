@@ -122,6 +122,7 @@ public class VariableManager {
             .flatMap(Collection::stream)
             .filter(region -> region.isOwner(wgowner))
             .map(ProtectedRegion::getId)
+            .filter(region -> region.matches(owner.getUniqueId().toString() +  "_"))
             .map(VariableManager::realRegionName)
             .collect(Collectors.toList());
         return regionNames;
@@ -140,12 +141,11 @@ public class VariableManager {
             .flatMap(Collection::stream)
             .filter(region -> region.isOwner(wsender))
             .map(ProtectedRegion::getId)
-            .filter(region -> Pattern.matches("[0-9]+_.*",region))
+            .filter(region -> region.matches(TeamID +  "_"))
             .map(VariableManager::realRegionName)
             .collect(Collectors.toList());
 
         return regionNames;
-        
     }
 
     public static String realRegionName(String region){

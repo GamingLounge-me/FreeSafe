@@ -50,8 +50,8 @@ public class TeamClaimManager {
         DefaultDomain owners = newTeamRegion.getOwners();
         DefaultDomain members = newTeamRegion.getMembers();
 
-        //todo: fix this, so that it uses a listener, that returns admins and not owners, so that we can have multiple people manage the claim
-        owners.addPlayer(wesender.getUniqueId());
+        // TODO: fix this, so that it uses a listener, that returns admins and not owners, so that we can have multiple people manage the claim
+        owners.addPlayer(DataBasePool.getOwner(Gamingteams.INSTANCE.basePool, teamname).getUniqueId());
         newTeamRegion.setOwners(owners);
 
         DataBasePool.getMembersUUIDs(Gamingteams.INSTANCE.basePool, teamname).forEach(teamMembers -> {
@@ -84,7 +84,37 @@ public class TeamClaimManager {
         owner.sendMessage(mm.deserialize(prefix+"<green>Your claim named </green><blue>"+claimName+"</blue><green> has been removed.</green>"));
     }
 
-    public void trustTeamRegion(){
-        
+    public void trustTeamRegion(Player executor, String shortClaimName,Player target){
+
+        String nameAdapted = DataBasePool.getTeam(Gamingteams.INSTANCE.basePool, executor.getUniqueId())+"_"+shortClaimName.toLowerCase();
+        var weExecutor = BukkitAdapter.adapt(executor);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regions = container.get(weExecutor.getWorld());
+        if (!regions.hasRegion(nameAdapted) || regions.getRegion(nameAdapted) == null) {
+            executor.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+shortClaimName+"</blue><red> does not exist.</red>"));
+            return;
+        }
+        ProtectedRegion region = regions.getRegion(nameAdapted);
+        DefaultDomain members = region.getMembers();
+        members.addPlayer(BukkitAdapter.adapt(target).getUniqueId());
+        region.setMembers(members);
+        executor.sendMessage(mm.deserialize(prefix+"<green>"+target.getName()+"</green><green> has been added as a member of </green><blue>"+shortClaimName+"</blue>"));
+    }
+
+    public void untrustTeamRegion(Player executor, String shortClaimName,Player target){
+
+        String nameAdapted = DataBasePool.getTeam(Gamingteams.INSTANCE.basePool, executor.getUniqueId())+"_"+shortClaimName.toLowerCase();
+        var weExecutor = BukkitAdapter.adapt(executor);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regions = container.get(weExecutor.getWorld());
+        if (!regions.hasRegion(nameAdapted) || regions.getRegion(nameAdapted) == null) {
+            executor.sendMessage(mm.deserialize(prefix+"<red>A Claim with the name </red><blue>"+shortClaimName+"</blue><red> does not exist.</red>"));
+            return;
+        }
+        ProtectedRegion region = regions.getRegion(nameAdapted);
+        DefaultDomain members = region.getMembers();
+        members.removePlayer(BukkitAdapter.adapt(target).getUniqueId());
+        region.setMembers(members);
+        executor.sendMessage(mm.deserialize(prefix+"<green>"+target.getName()+"</green><green> has been removed as a member of </green><blue>"+shortClaimName+"</blue>"));
     }
 }

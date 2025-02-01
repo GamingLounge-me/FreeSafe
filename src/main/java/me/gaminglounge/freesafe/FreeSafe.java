@@ -11,7 +11,8 @@ import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.gaminglounge.freesafe.commands.AdminClaimCommands;
 import me.gaminglounge.freesafe.commands.PlayerClaimComands;
-import me.gaminglounge.freesafe.commands.TeamClaimCommands; 
+import me.gaminglounge.freesafe.commands.TeamClaimCommands;
+import me.gaminglounge.listeners.TeamChanges; 
 
 public final class FreeSafe extends JavaPlugin { 
  
@@ -40,6 +41,7 @@ public final class FreeSafe extends JavaPlugin {
         variableManager = new VariableManager();
         visualization = new Visualization();
         teamClaimManager = new TeamClaimManager();
+        this.listener();
 
     }
 
@@ -51,6 +53,7 @@ public final class FreeSafe extends JavaPlugin {
 
     public void listener() {
         PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(new TeamChanges(), this);
 
         // pm.registerEvents(new InvClickEvent(), this);
     } 
