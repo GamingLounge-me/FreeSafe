@@ -22,7 +22,7 @@ public class TeamClaimCommands {
 
     public TeamClaimCommands() {
 
-        new CommandAPICommand("test")
+        new CommandAPICommand("teamclaim")
             .withSubcommand(new CommandAPICommand("create")
             .withPermission("freesafe.teamclaim.create")
                 .withArguments(new StringArgument("name"))

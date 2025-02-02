@@ -29,3 +29,7 @@ dependencies:
       load: BEFORE
       required: true
       join-classpath: true
+    Stuff:
+      load: BEFORE
+      required: true
+      join-classpath: true
