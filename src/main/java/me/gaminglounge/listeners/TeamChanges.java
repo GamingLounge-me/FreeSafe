@@ -26,7 +26,7 @@ public class TeamChanges implements Listener{
     public void addTeamMember(TeamsJoinPlayer event){
         
         int TeamID = event.getTeamID();
-        UUID UUID = event.removedMember();//this has been named in an incorrect way, but will be fixed
+        UUID UUID = event.joinedMember();//this has been named in an incorrect way, but will be fixed
         FreeSafe.INSTANCE.getLogger().log(Level.WARNING, "The UUID "+UUID.toString()+" joined the Team with the ID "+TeamID);
 
         var wPlayer = WorldGuardPlugin.inst().wrapOfflinePlayer(Bukkit.getOfflinePlayer(UUID));
